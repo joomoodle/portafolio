@@ -37,9 +37,16 @@ export function About() {
             <p className="text-slate-400 text-lg leading-relaxed mb-6">
               Empecé con sistemas de cobranza escolar y facturación electrónica para el SAT. Con los años pasé a sistemas de crédito digitales con validación facial, plataformas de cobro y call center sobre WhatsApp, y suites empresariales con microfrontends.
             </p>
-            <p className="text-slate-400 text-lg leading-relaxed">
+            <p className="text-slate-400 text-lg leading-relaxed mb-8">
               Hoy lidero decisiones técnicas y entrego proyectos completos — desde la arquitectura hasta el deploy. Me interesa la IA aplicada al software, pero siempre con enfoque en resolver problemas reales, no en usar tecnología por usarla.
             </p>
+
+            <div className="p-5 rounded-xl border border-emerald-500/20 bg-emerald-500/5">
+              <p className="text-xs font-mono text-emerald-500 uppercase tracking-widest mb-3">IA como aliada</p>
+              <p className="text-slate-300 text-sm leading-relaxed">
+                Uso herramientas de IA para acelerar el desarrollo, detectar bugs antes de que lleguen a producción y elevar la calidad del código. La IA no reemplaza al desarrollador — lo potencia. Un desarrollador con experiencia que sabe aprovechar estas herramientas entrega proyectos con mayor valor, en menos tiempo y con menos errores.
+              </p>
+            </div>
           </motion.div>
 
           {/* Right: details */}
