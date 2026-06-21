@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"developer portfolio full stack react typescript dark premium saas\" --design-system -p \"Juan Pablo Dionicio\")",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"developer portfolio dark mode premium saas startup\" --design-system -p \"Juan Pablo Dionicio\")",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"react typescript portfolio\")",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"portfolio motion minimalism dark\" --design-system -p \"Juan Pablo Dionicio\")"
+    ]
+  }
+}

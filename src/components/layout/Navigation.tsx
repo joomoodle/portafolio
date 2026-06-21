@@ -18,18 +18,14 @@ export function Navigation() {
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', onScroll)
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id)
-          }
-        })
+        entries.forEach((e) => { if (e.isIntersecting) setActiveSection(e.target.id) })
       },
       { threshold: 0.4 }
     )
@@ -42,8 +38,7 @@ export function Navigation() {
 
   const handleNav = (href: string) => {
     setMobileOpen(false)
-    const el = document.querySelector(href)
-    el?.scrollIntoView({ behavior: 'smooth' })
+    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
@@ -51,10 +46,10 @@ export function Navigation() {
       <motion.header
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-zinc-950/90 backdrop-blur-xl border-b border-zinc-800/60 shadow-lg shadow-black/20'
+            ? 'bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/60 shadow-lg shadow-black/30'
             : 'bg-transparent'
         }`}
       >
@@ -62,12 +57,12 @@ export function Navigation() {
           <div className="flex items-center justify-between h-16">
             <button
               onClick={() => handleNav('#hero')}
-              className="flex items-center gap-2 text-white font-bold text-lg hover:opacity-80 transition-opacity"
+              className="flex items-center gap-2 text-white font-bold text-lg hover:opacity-80 transition-opacity cursor-pointer"
             >
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-cyan-500 flex items-center justify-center">
-                <Code2 className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center">
+                <Code2 className="w-4 h-4 text-slate-950" />
               </div>
-              <span className="gradient-text">JPD</span>
+              <span className="heading gradient-text font-bold">JPD</span>
             </button>
 
             <nav className="hidden md:flex items-center gap-1">
@@ -75,10 +70,10 @@ export function Navigation() {
                 <button
                   key={href}
                   onClick={() => handleNav(href)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer ${
                     activeSection === href.replace('#', '')
-                      ? 'text-violet-400 bg-violet-500/10'
-                      : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'
+                      ? 'text-emerald-400 bg-emerald-500/10'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
                   }`}
                 >
                   {label}
@@ -88,14 +83,15 @@ export function Navigation() {
 
             <button
               onClick={() => handleNav('#contact')}
-              className="hidden md:inline-flex items-center gap-2 h-9 px-4 rounded-lg bg-gradient-to-r from-violet-600 to-cyan-500 text-white text-sm font-semibold hover:scale-[1.02] transition-transform"
+              className="hidden md:inline-flex items-center gap-2 h-9 px-5 rounded-lg btn-primary text-sm cursor-pointer"
             >
               Trabajemos juntos
             </button>
 
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 text-zinc-400 hover:text-white"
+              className="md:hidden p-2 text-slate-400 hover:text-white cursor-pointer"
+              aria-label="Menú"
             >
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -106,25 +102,25 @@ export function Navigation() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            exit={{ opacity: 0, y: -16 }}
             transition={{ duration: 0.2 }}
-            className="fixed top-16 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-xl border-b border-zinc-800 shadow-xl"
+            className="fixed top-16 left-0 right-0 z-40 bg-slate-950/97 backdrop-blur-xl border-b border-slate-800 shadow-xl"
           >
             <nav className="flex flex-col p-4 gap-1">
               {navLinks.map(({ label, href }) => (
                 <button
                   key={href}
                   onClick={() => handleNav(href)}
-                  className="px-4 py-3 rounded-lg text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800/50 text-left transition-colors"
+                  className="px-4 py-3 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 text-left transition-colors cursor-pointer"
                 >
                   {label}
                 </button>
               ))}
               <button
                 onClick={() => handleNav('#contact')}
-                className="mt-2 px-4 py-3 rounded-lg bg-gradient-to-r from-violet-600 to-cyan-500 text-white text-sm font-semibold text-center"
+                className="mt-2 px-4 py-3 rounded-lg btn-primary text-sm text-center cursor-pointer"
               >
                 Trabajemos juntos
               </button>
