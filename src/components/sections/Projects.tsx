@@ -224,6 +224,13 @@ export function Projects() {
           </AnimatePresence>
         </div>
 
+        {/* Disclaimer */}
+        <p className="mt-12 text-center text-xs text-slate-600 leading-relaxed max-w-2xl mx-auto border-t border-slate-800/60 pt-8">
+          Todos los proyectos mostrados son propiedad de las empresas para las que fueron desarrollados.
+          Se presentan únicamente como referencia para demostrar experiencia técnica y no implican
+          divulgación de información confidencial.
+        </p>
+
         <AnimatePresence>
           {selected && <ProjectModal project={selected} onClose={() => setSelected(null)} />}
         </AnimatePresence>
