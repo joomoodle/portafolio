@@ -1,12 +1,20 @@
 @import "tailwindcss";
 
-@layer base {
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+@theme {
+  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
 
+  /* Flat dark surfaces (landing-page-design B4) */
+  --color-ink: #000000;
+  --color-surface: #181818;
+  --color-raised: #1F1F1F;
+  --color-line: #272727;
+  --color-line-strong: #313131;
+
+  --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@layer base {
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
@@ -14,30 +22,31 @@
   }
 
   body {
-    background-color: #0F172A;
-    color: #F8FAFC;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    background-color: var(--color-ink);
+    color: #F5F5F5;
+    font-family: var(--font-sans);
     overflow-x: hidden;
-    line-height: 1.6;
   }
 
-  #root {
-    width: 100%;
-    min-height: 100vh;
-  }
+  h1, h2, h3 { text-wrap: balance; }
+  p, li { text-wrap: pretty; }
 
   ::selection {
-    background-color: rgba(34, 197, 94, 0.25);
-    color: #F8FAFC;
+    background-color: rgba(52, 211, 153, 0.25);
+    color: #FFFFFF;
   }
 
-  ::-webkit-scrollbar { width: 5px; }
-  ::-webkit-scrollbar-track { background: #0F172A; }
-  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #22C55E; }
+  :focus-visible {
+    outline: 2px solid #34D399;
+    outline-offset: 2px;
+  }
 
-  /* prefers-reduced-motion */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--color-ink); }
+  ::-webkit-scrollbar-thumb { background: var(--color-line-strong); border-radius: 4px; }
+
   @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
@@ -47,88 +56,23 @@
 }
 
 @layer utilities {
-  .gradient-text {
-    background: linear-gradient(135deg, #22C55E, #06B6D4);
+  /* Hero heading only: gradient on text, never on backgrounds (B5) */
+  .hero-text {
+    background: linear-gradient(90deg, #FFFFFF, #9B9B9B);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
-  }
-
-  .gradient-text-alt {
-    background: linear-gradient(135deg, #F8FAFC 0%, #94A3B8 100%);
-    -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
   }
 
-  .heading {
-    font-family: 'Space Grotesk', system-ui, sans-serif;
-    letter-spacing: -0.03em;
-  }
-
-  .font-mono {
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  .section-padding {
-    padding-top: 6rem;
-    padding-bottom: 6rem;
+  .section-y {
+    padding-top: 80px;
+    padding-bottom: 80px;
   }
 
   @media (min-width: 768px) {
-    .section-padding {
-      padding-top: 8rem;
-      padding-bottom: 8rem;
+    .section-y {
+      padding-top: 96px;
+      padding-bottom: 96px;
     }
-  }
-
-  .card-hover {
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  }
-
-  .card-hover:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
-  }
-
-  .btn-primary {
-    background: #22C55E;
-    color: #0F172A;
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 600;
-    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
-  }
-
-  .btn-primary:hover {
-    background: #16A34A;
-    transform: translateY(-1px);
-    box-shadow: 0 8px 30px rgba(34, 197, 94, 0.35);
-  }
-
-  .btn-primary:active {
-    transform: translateY(0);
-  }
-
-  .gradient-border-green {
-    position: relative;
-    border-radius: 12px;
-  }
-
-  .gradient-border-green::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 12px;
-    padding: 1px;
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.4), rgba(6, 182, 212, 0.4));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-  }
-
-  .glow-green {
-    box-shadow: 0 0 40px rgba(34, 197, 94, 0.2);
   }
 }
