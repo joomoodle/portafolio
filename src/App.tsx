@@ -7,7 +7,6 @@ import { Experience } from './components/sections/Experience'
 import { Projects } from './components/sections/Projects'
 import { Skills } from './components/sections/Skills'
 import { Services } from './components/sections/Services'
-import { Testimonials } from './components/sections/Testimonials'
 import { Contact } from './components/sections/Contact'
 
 function App() {
@@ -22,7 +21,6 @@ function App() {
         <Experience />
         <Skills />
         <Services />
-        <Testimonials />
         <Contact />
       </main>
       <Footer />
