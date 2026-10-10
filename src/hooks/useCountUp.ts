@@ -22,7 +22,8 @@ export function useCountUp(target: number, duration = 1500, startOnMount = false
 }
 
 export function useInViewCountUp(target: number, duration = 1400) {
-  const [count, setCount] = useState(0)
+  // Starts at the final value so prerendered HTML shows real numbers
+  const [count, setCount] = useState(target)
   const ref = useRef<HTMLDivElement>(null)
   const started = useRef(false)
 
