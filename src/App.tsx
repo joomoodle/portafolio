@@ -2,6 +2,7 @@ import { Navigation } from './components/layout/Navigation'
 import { Footer } from './components/layout/Footer'
 import { ScrollProgress } from './components/ui/ScrollProgress'
 import { Hero } from './components/sections/Hero'
+import { TaglineReveal } from './components/sections/TaglineReveal'
 import { ScrollWorld } from './components/sections/ScrollWorld'
 import { About } from './components/sections/About'
 import { Experience } from './components/sections/Experience'
@@ -20,6 +21,7 @@ function App() {
         <ScrollWorld />
         <About />
         <Projects />
+        <TaglineReveal />
         <Experience />
         <Skills />
         <Services />
