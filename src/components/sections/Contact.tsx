@@ -1,187 +1,170 @@
 import { useState } from 'react'
-import type { FormEvent } from 'react'
-import { motion } from 'framer-motion'
-import { SectionHeader } from '../ui/SectionHeader'
-import { Mail, MessageSquare, Send, Calendar, MapPin, CheckCircle2 } from 'lucide-react'
-import { GithubIcon, LinkedinIcon } from '../ui/SocialIcons'
-
-const contactInfo = [
-  { icon: Mail, label: 'Email', value: 'juanpa.ian.1992@gmail.com', href: 'mailto:juanpa.ian.1992@gmail.com' },
-  { icon: LinkedinIcon, label: 'LinkedIn', value: 'linkedin.com/in/juanpablo-dionicio', href: 'https://linkedin.com' },
-  { icon: GithubIcon, label: 'GitHub', value: 'github.com/joomoodle', href: 'https://github.com/joomoodle' },
-  { icon: MapPin, label: 'Ubicación', value: 'México · Trabajo remoto global', href: null },
-]
+import type { ChangeEvent, FormEvent } from 'react'
+import { EnvelopeSimple, WhatsappLogo, GithubLogo, LinkedinLogo, MapPin, PaperPlaneTilt } from '@phosphor-icons/react'
+import { contact } from '../../data/contact'
+import { Reveal } from '../../lib/motion'
 
 const projectTypes = [
-  'App Móvil (iOS/Android)', 'Sistema Web / Dashboard', 'API / Backend',
-  'Integración de Pagos', 'Automatización de Procesos', 'Consultoría Técnica',
+  'OCR y procesamiento de documentos',
+  'Plataforma SaaS o MVP',
+  'Herramienta interna o panel',
+  'Automatización o integración',
+  'App móvil',
+  'Backend, cloud o rescate de sistema',
+  'Otro',
 ]
 
+type Form = { name: string; email: string; type: string; message: string }
+type Errors = Partial<Record<keyof Form, string>>
+
+function validate(f: Form): Errors {
+  const e: Errors = {}
+  if (!f.name.trim()) e.name = 'Escribe tu nombre.'
+  if (!f.email.trim()) e.email = 'Escribe tu correo.'
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)) e.email = 'Revisa el formato del correo.'
+  if (f.message.trim().length < 20) e.message = 'Cuéntame un poco más, al menos 20 caracteres.'
+  return e
+}
+
+function composeBody(f: Form) {
+  return `Hola Juan Pablo, soy ${f.name} (${f.email}).\n\nTipo de proyecto: ${f.type || 'Sin especificar'}\n\n${f.message}`
+}
+
 export function Contact() {
-  const [form, setForm] = useState({ name: '', email: '', company: '', projectType: '', budget: '', message: '' })
-  const [submitted, setSubmitted] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [form, setForm] = useState<Form>({ name: '', email: '', type: '', message: '' })
+  const [errors, setErrors] = useState<Errors>({})
+  const [sent, setSent] = useState(false)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }))
+    setErrors((er) => ({ ...er, [e.target.name]: undefined }))
   }
 
-  const handleSubmit = async (e: FormEvent) => {
+  const onSubmit = (e: FormEvent) => {
     e.preventDefault()
-    setLoading(true)
-    await new Promise((r) => setTimeout(r, 1200))
-    setLoading(false)
-    setSubmitted(true)
+    const found = validate(form)
+    setErrors(found)
+    if (Object.keys(found).length) return
+    const subject = encodeURIComponent(`Proyecto: ${form.type || 'Contacto desde el portafolio'}`)
+    window.location.href = `mailto:${contact.email}?subject=${subject}&body=${encodeURIComponent(composeBody(form))}`
+    setSent(true)
   }
 
-  const inputClass = "w-full h-11 px-4 rounded-xl bg-slate-800/60 border border-slate-700/60 text-white text-sm placeholder:text-slate-600 focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/30 transition-colors"
-  const selectClass = `${inputClass} appearance-none cursor-pointer`
+  const whatsappHref = `${contact.whatsappUrl}?text=${encodeURIComponent(
+    form.message ? composeBody(form) : 'Hola Juan Pablo, quiero cotizar un proyecto.',
+  )}`
+
+  const field = (name: keyof Form) =>
+    `w-full rounded-xl border bg-ink px-4 py-3 text-base text-white placeholder:text-neutral-600 transition-colors duration-700 ease-fluid focus:outline-none focus:border-emerald-400 ${
+      errors[name] ? 'border-red-400' : 'border-line'
+    }`
 
   return (
-    <section id="contact" className="section-padding">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHeader
-          label="Contacto"
-          title="Hablemos de tu "
-          highlight="próximo proyecto"
-          description="¿Tienes una idea, un problema o un proyecto en mente? Cuéntame. Respondo en menos de 24 horas."
-        />
+    <section id="contact" className="section-y border-t border-line">
+      <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+        <Reveal>
+          <p className="mb-4 font-mono text-xs uppercase tracking-widest text-emerald-400">Contacto</p>
+          <h2 className="hero-text mb-6 max-w-[680px] text-4xl font-semibold tracking-tight md:text-6xl">
+            Cuéntame qué quieres
+            <br />
+            dejar de hacer a mano
+          </h2>
+          <p className="mb-10 max-w-[680px] text-lg text-neutral-400">
+            Respondo en menos de 24 horas en días hábiles. La primera llamada es para entender tu negocio, sin costo ni compromiso, y después recibes una propuesta con alcance, tiempos y costo.
+          </p>
 
-        <div className="grid lg:grid-cols-5 gap-10 mt-16">
-          {/* Left */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="lg:col-span-2 space-y-5"
+          <a
+            href={whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mb-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-base font-semibold text-black transition-transform duration-700 ease-fluid hover:scale-[1.03] active:scale-[0.98]"
           >
-            <div className="p-6 rounded-2xl bg-emerald-500/5 border border-emerald-500/20">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center">
-                  <MessageSquare className="w-5 h-5 text-slate-950" />
-                </div>
-                <div>
-                  <p className="heading text-white font-semibold text-sm">Respuesta rápida</p>
-                  <p className="text-slate-500 text-xs">Generalmente en menos de 24h</p>
-                </div>
-              </div>
-              <p className="text-slate-400 text-sm leading-relaxed">
-                Prefiero entender bien el problema antes de proponer una solución. En nuestra primera llamada te haré preguntas sobre el negocio, no solo sobre tecnología.
-              </p>
-            </div>
+            <WhatsappLogo size={20} weight="fill" />
+            Cotiza tu proyecto gratis
+          </a>
 
-            <div className="space-y-3">
-              {contactInfo.map(({ icon: Icon, label, value, href }) => (
-                <div key={label} className="flex items-center gap-3 p-4 rounded-xl bg-slate-900/60 border border-slate-800/70">
-                  <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-4 h-4 text-emerald-400" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-slate-600 text-xs">{label}</p>
-                    {href ? (
-                      <a href={href} target={href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer"
-                        className="text-slate-300 text-sm hover:text-emerald-400 transition-colors truncate block">
-                        {value}
-                      </a>
-                    ) : (
-                      <p className="text-slate-300 text-sm truncate">{value}</p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
+          <ul className="space-y-4">
+            {[
+              { icon: EnvelopeSimple, label: contact.email, href: `mailto:${contact.email}` },
+              { icon: WhatsappLogo, label: contact.phoneDisplay, href: contact.whatsappUrl },
+              { icon: LinkedinLogo, label: 'LinkedIn', href: contact.linkedin },
+              { icon: GithubLogo, label: 'GitHub', href: contact.github },
+              { icon: MapPin, label: contact.location, href: null },
+            ].map(({ icon: Icon, label, href }) => (
+              <li key={label} className="flex items-center gap-4 text-neutral-300">
+                <Icon size={20} className="text-neutral-500" />
+                {href ? (
+                  <a
+                    href={href}
+                    target={href.startsWith('http') ? '_blank' : undefined}
+                    rel="noopener noreferrer"
+                    className="transition-colors duration-700 ease-fluid hover:text-white"
+                  >
+                    {label}
+                  </a>
+                ) : (
+                  label
+                )}
+              </li>
+            ))}
+          </ul>
+        </Reveal>
 
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/70 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center flex-shrink-0">
-                <Calendar className="w-4 h-4 text-cyan-400" />
-              </div>
-              <div>
-                <p className="text-slate-300 text-sm font-medium">Agenda una llamada</p>
-                <p className="text-slate-500 text-xs">30 min · Sin compromiso</p>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Right: Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="lg:col-span-3"
-          >
-            {submitted ? (
-              <div className="h-full flex flex-col items-center justify-center p-12 rounded-2xl bg-slate-900/60 border border-slate-800/70 text-center">
-                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', damping: 18 }}>
-                  <CheckCircle2 className="w-16 h-16 text-emerald-400 mx-auto mb-4" />
-                </motion.div>
-                <h3 className="heading text-white font-bold text-xl mb-2">¡Mensaje enviado!</h3>
-                <p className="text-slate-400 text-sm max-w-sm">
-                  Gracias por escribirme. Revisaré tu mensaje y te responderé en menos de 24 horas.
+        <Reveal delay={0.1}>
+          <div className="rounded-3xl border border-line bg-surface p-2">
+            {sent ? (
+              <div className="flex min-h-96 flex-col justify-center rounded-2xl bg-ink/60 p-8">
+                <h3 className="mb-2 text-2xl font-semibold text-white">Tu mensaje está listo para enviarse</h3>
+                <p className="mb-6 text-neutral-400">
+                  Abrimos tu app de correo con todo prellenado. Si no se abrió, escríbeme directo a {contact.email} o por WhatsApp.
                 </p>
+                <button onClick={() => setSent(false)} className="w-max text-sm text-emerald-400 hover:text-emerald-300">
+                  Editar mensaje
+                </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/70 space-y-5">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <form noValidate onSubmit={onSubmit} className="space-y-4 rounded-2xl bg-ink/60 p-6">
+                <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="block text-slate-400 text-xs font-medium mb-1.5">Nombre *</label>
-                    <input type="text" name="name" required value={form.name} onChange={handleChange} placeholder="Tu nombre completo" className={inputClass} />
+                    <label htmlFor="name" className="mb-2 block text-sm text-neutral-400">Nombre</label>
+                    <input id="name" name="name" value={form.name} onChange={onChange} autoComplete="name"
+                      aria-invalid={!!errors.name} aria-describedby="name-error" className={field('name')} />
+                    {errors.name && <p id="name-error" className="mt-2 text-sm text-red-400">{errors.name}</p>}
                   </div>
                   <div>
-                    <label className="block text-slate-400 text-xs font-medium mb-1.5">Email *</label>
-                    <input type="email" name="email" required value={form.email} onChange={handleChange} placeholder="tu@empresa.com" className={inputClass} />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-slate-400 text-xs font-medium mb-1.5">Empresa / Startup</label>
-                    <input type="text" name="company" value={form.company} onChange={handleChange} placeholder="Nombre de tu empresa" className={inputClass} />
-                  </div>
-                  <div>
-                    <label className="block text-slate-400 text-xs font-medium mb-1.5">Tipo de proyecto</label>
-                    <select name="projectType" value={form.projectType} onChange={handleChange} className={selectClass}>
-                      <option value="" className="bg-slate-900">Selecciona una opción</option>
-                      {projectTypes.map((pt) => <option key={pt} value={pt} className="bg-slate-900">{pt}</option>)}
-                    </select>
+                    <label htmlFor="email" className="mb-2 block text-sm text-neutral-400">Correo</label>
+                    <input id="email" name="email" type="email" value={form.email} onChange={onChange} autoComplete="email"
+                      aria-invalid={!!errors.email} aria-describedby="email-error" className={field('email')} />
+                    {errors.email && <p id="email-error" className="mt-2 text-sm text-red-400">{errors.email}</p>}
                   </div>
                 </div>
-
                 <div>
-                  <label className="block text-slate-400 text-xs font-medium mb-1.5">Presupuesto estimado</label>
-                  <select name="budget" value={form.budget} onChange={handleChange} className={selectClass}>
-                    <option value="" className="bg-slate-900">¿En qué rango estás?</option>
-                    <option value="<5k" className="bg-slate-900">Menos de $5,000 USD</option>
-                    <option value="5k-15k" className="bg-slate-900">$5,000 – $15,000 USD</option>
-                    <option value="15k-30k" className="bg-slate-900">$15,000 – $30,000 USD</option>
-                    <option value="30k+" className="bg-slate-900">Más de $30,000 USD</option>
-                    <option value="freelance" className="bg-slate-900">Por hora / retainer</option>
+                  <label htmlFor="type" className="mb-2 block text-sm text-neutral-400">Tipo de proyecto</label>
+                  <select id="type" name="type" value={form.type} onChange={onChange} className={`${field('type')} cursor-pointer`}>
+                    <option value="">Selecciona una opción</option>
+                    {projectTypes.map((t) => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
                   </select>
                 </div>
-
                 <div>
-                  <label className="block text-slate-400 text-xs font-medium mb-1.5">Cuéntame sobre tu proyecto *</label>
-                  <textarea name="message" required rows={5} value={form.message} onChange={handleChange}
-                    placeholder="Describe el problema que quieres resolver..."
-                    className="w-full px-4 py-3 rounded-xl bg-slate-800/60 border border-slate-700/60 text-white text-sm placeholder:text-slate-600 focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/30 transition-colors resize-none" />
+                  <label htmlFor="message" className="mb-2 block text-sm text-neutral-400">Tu proyecto</label>
+                  <textarea id="message" name="message" rows={5} value={form.message} onChange={onChange}
+                    placeholder="Qué haces hoy a mano, cuánto tiempo te toma y qué te gustaría automatizar"
+                    aria-invalid={!!errors.message} aria-describedby="message-error" className={`${field('message')} resize-none`} />
+                  {errors.message && <p id="message-error" className="mt-2 text-sm text-red-400">{errors.message}</p>}
                 </div>
-
-                <button type="submit" disabled={loading}
-                  className="w-full h-12 rounded-xl btn-primary text-slate-950 font-semibold flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed">
-                  {loading ? (
-                    <span className="flex items-center gap-2">
-                      <span className="w-4 h-4 border-2 border-slate-950/30 border-t-slate-950 rounded-full animate-spin" />
-                      Enviando...
-                    </span>
-                  ) : (
-                    <><Send className="w-4 h-4" /> Enviar mensaje</>
-                  )}
+                <button
+                  type="submit"
+                  className="flex w-full items-center justify-center gap-2 rounded-full border border-line-strong px-6 py-3 text-base font-semibold text-white transition-colors duration-700 ease-fluid hover:bg-white hover:text-black active:scale-[0.98]"
+                >
+                  <PaperPlaneTilt size={16} />
+                  Enviar por correo
                 </button>
               </form>
             )}
-          </motion.div>
-        </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   )
