@@ -1,7 +1,6 @@
 import { Navigation } from './components/layout/Navigation'
 import { Footer } from './components/layout/Footer'
 import { ScrollProgress } from './components/ui/ScrollProgress'
-import { CursorGlow } from './components/ui/CursorGlow'
 import { Hero } from './components/sections/Hero'
 import { About } from './components/sections/About'
 import { Experience } from './components/sections/Experience'
@@ -15,7 +14,6 @@ function App() {
   return (
     <div className="min-h-screen bg-[#09090B] text-white">
       <ScrollProgress />
-      <CursorGlow />
       <Navigation />
       <main>
         <Hero />
