@@ -1,37 +1,18 @@
-import { motion } from 'framer-motion'
+import { Reveal } from '../../lib/motion'
 
 interface SectionHeaderProps {
   label: string
   title: string
-  highlight?: string
   description?: string
   centered?: boolean
 }
 
-export function SectionHeader({ label, title, highlight, description, centered = true }: SectionHeaderProps) {
-  const parts = highlight ? title.split(highlight) : [title]
-
+export function SectionHeader({ label, title, description, centered = false }: SectionHeaderProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-      className={centered ? 'text-center' : ''}
-    >
-      <p className="text-xs font-mono text-emerald-500 uppercase tracking-[0.2em] mb-4">
-        — {label}
-      </p>
-      <h2 className="heading text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl mb-5">
-        {parts[0]}
-        {highlight && <em className="not-italic text-emerald-400">{highlight}</em>}
-        {parts[1]}
-      </h2>
-      {description && (
-        <p className={`text-slate-400 text-lg leading-relaxed ${centered ? 'max-w-2xl mx-auto' : ''}`}>
-          {description}
-        </p>
-      )}
-    </motion.div>
+    <Reveal className={centered ? 'mx-auto max-w-[680px] text-center' : 'max-w-[680px]'}>
+      <p className="mb-4 font-mono text-xs uppercase tracking-widest text-emerald-400">{label}</p>
+      <h2 className="mb-4 text-3xl font-semibold tracking-tight text-white md:text-5xl">{title}</h2>
+      {description && <p className="text-lg text-neutral-400">{description}</p>}
+    </Reveal>
   )
 }
