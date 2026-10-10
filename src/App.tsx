@@ -2,6 +2,7 @@ import { Navigation } from './components/layout/Navigation'
 import { Footer } from './components/layout/Footer'
 import { ScrollProgress } from './components/ui/ScrollProgress'
 import { Hero } from './components/sections/Hero'
+import { Process, Faq } from './components/sections/Faq'
 import { TaglineReveal } from './components/sections/TaglineReveal'
 import { ScrollWorld } from './components/sections/ScrollWorld'
 import { About } from './components/sections/About'
@@ -25,6 +26,8 @@ function App() {
         <Experience />
         <Skills />
         <Services />
+        <Process />
+        <Faq />
         <Contact />
       </main>
       <Footer />
