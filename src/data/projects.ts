@@ -1,197 +1,134 @@
+export type ProjectCategory = 'Fintech' | 'Mobile' | 'Arquitectura' | 'Automatización'
+
 export interface Project {
   id: string
   title: string
-  category: string
-  categoryColor: string
-  problem: string
-  solution: string
-  results: string[]
+  client?: string
+  category: ProjectCategory
+  summary: string
+  highlights: string[]
+  responsibilities: string[]
+  components?: { title: string; items: string[] }[]
   stack: string[]
-  image: string
   featured: boolean
-  demoUrl?: string
-  caseStudy: {
-    challenge: string
-    approach: string
-    outcome: string
-  }
 }
 
 export const projects: Project[] = [
   {
-    id: 'fintech-credito',
-    title: 'Plataforma de Crédito Digital',
+    id: 'onboarding-midinerito',
+    title: 'Onboarding digital para crédito',
+    client: 'MiDinerito',
     category: 'Fintech',
-    categoryColor: 'text-violet-400 bg-violet-400/10',
-    problem: 'Institución financiera con proceso de originación de créditos completamente manual: papeles, largas esperas y alta tasa de abandono del 68% en el onboarding.',
-    solution: 'Plataforma full-stack con app móvil para onboarding digital: captura de documentos con OCR, scoring automático, firma electrónica y desembolso en menos de 24h.',
-    results: [
-      'Reducción del 85% en tiempo de aprobación (72h → 11h)',
-      'Abandono de onboarding reducido de 68% a 12%',
-      '3,200+ créditos digitales en primer trimestre',
-      'Integración con buró de crédito en tiempo real',
+    summary:
+      'Plataforma de onboarding financiero con backend, app móvil y panel administrativo para digitalizar el registro, la validación de identidad, las ofertas de crédito y la formalización de operaciones.',
+    highlights: [
+      'Validación biométrica y reconocimiento facial con Veridas',
+      'Firma digital de documentos con WeTrust',
+      'OCR para extracción y validación documental',
+      'Flujos automatizados por WhatsApp y notificaciones push',
     ],
-    stack: ['React Native', 'TypeScript', 'ASP.NET Core', 'SQL Server', 'Azure', 'JWT', 'OpenPay'],
-    image: 'fintech',
+    responsibilities: [
+      'Diseño y desarrollo del backend y de las APIs RESTful de la plataforma',
+      'App móvil para Android e iOS con React Native',
+      'Panel administrativo en React para usuarios, solicitudes y ofertas de crédito',
+      'Flujos de registro, evaluación y control de estados de cada solicitud',
+      'Comunicación y procesamiento en tiempo real y procesos asíncronos',
+      'Comparación de rostros e identidad contra documentos oficiales',
+      'Contenerización con Docker, pipelines de GitLab CI/CD y despliegue en la nube',
+      'Diagnóstico de incidencias productivas y optimización de OCR y biometría',
+    ],
+    components: [
+      { title: 'App móvil', items: ['React Native', 'Android', 'iOS', 'Face ID', 'Push'] },
+      { title: 'Backend', items: ['.NET / C#', 'ASP.NET Core', 'Microservicios', 'Tiempo real'] },
+      { title: 'Panel', items: ['React', 'Solicitudes', 'Ofertas de crédito', 'Seguimiento'] },
+      { title: 'Integraciones', items: ['Veridas', 'WeTrust', 'OCR', 'WhatsApp', 'Firebase'] },
+      { title: 'Infraestructura', items: ['AWS', 'Google Cloud', 'Docker', 'GitLab CI/CD', 'Nginx'] },
+    ],
+    stack: ['ASP.NET Core', 'React Native', 'React', 'Veridas', 'WeTrust', 'Docker', 'AWS', 'Google Cloud'],
     featured: true,
-    caseStudy: {
-      challenge: 'El proceso manual generaba errores del 23% en captura de datos y el equipo de análisis perdía 4h por expediente revisando documentos físicos.',
-      approach: 'Diseñé una arquitectura de microservicios con API Gateway, integré OCR para extracción automática de datos de INE y comprobantes, y construí un motor de reglas de scoring configurable por negocio.',
-      outcome: 'La plataforma procesa ahora 150+ solicitudes diarias de forma automatizada, con intervención humana solo en casos de alta excepción (4% del total).',
-    },
   },
   {
-    id: 'cobranza-mobile',
-    title: 'App de Cobranza para Gestores de Campo',
+    id: 'adelantos-nomina',
+    title: 'Plataforma de adelantos de nómina',
+    category: 'Fintech',
+    summary:
+      'Plataforma financiera para la originación y gestión de adelantos de nómina, con microservicios, app móvil y validación documental.',
+    highlights: [
+      'Microservicios con lógica de negocio financiera',
+      'App móvil con autenticación, biometría y Face ID',
+      'Procesamiento de documentos con OCR',
+    ],
+    responsibilities: [
+      'Desarrollo de APIs, servicios backend y lógica de negocio',
+      'Desarrollo y mantenimiento de microservicios',
+      'Integración con servicios externos y financieros',
+      'App móvil con React Native, autenticación y biometría',
+      'Procesamiento y validación de documentos con OCR',
+      'Configuración de ambientes, pipelines CI/CD y despliegues',
+      'Soporte productivo y optimización de procesos',
+    ],
+    stack: ['.NET', 'C#', 'Entity Framework Core', 'SQL Server', 'MySQL', 'React Native', 'AWS', 'Google Cloud', 'GitLab CI/CD'],
+    featured: true,
+  },
+  {
+    id: 'microservicios',
+    title: 'Plataforma de microservicios',
+    category: 'Arquitectura',
+    summary:
+      'Arquitectura de servicios independientes para distintos procesos empresariales, con API Gateway, procesamiento asíncrono y despliegue en Google Cloud Run.',
+    highlights: [
+      'API Gateway con Ocelot',
+      'Servicios contenerizados en Google Cloud Run',
+      'Despliegues automatizados con GitLab CI/CD',
+    ],
+    responsibilities: [
+      'Diseño y desarrollo de microservicios y APIs RESTful',
+      'Comunicación entre servicios y procesamiento asíncrono',
+      'Implementación del API Gateway con Ocelot',
+      'Contenerización con Docker y configuración de ambientes',
+      'Automatización de despliegues con GitLab CI/CD',
+      'Diagnóstico de infraestructura y soporte de servicios productivos',
+    ],
+    stack: ['.NET Core', 'C#', 'Entity Framework Core', 'SQL Server', 'Docker', 'Ocelot', 'Cloud Run', 'GitLab CI/CD'],
+    featured: true,
+  },
+  {
+    id: 'apps-mobile',
+    title: 'Aplicaciones móviles Android e iOS',
     category: 'Mobile',
-    categoryColor: 'text-cyan-400 bg-cyan-400/10',
-    problem: 'Equipo de 80 gestores de cobranza operando con hojas de Excel y WhatsApp. Sin trazabilidad, rutas ineficientes y recuperación mensual muy por debajo del potencial.',
-    solution: 'App móvil nativa para Android con geolocalización en tiempo real, gestión de visitas, registro de pagos offline-first y dashboard de rendimiento para supervisores.',
-    results: [
-      'Incremento del 34% en índice de recuperación mensual',
-      'Reducción del 45% en tiempo de reporte diario por gestor',
-      'Visibilidad total de 80 gestores en tiempo real',
-      'Operación 100% offline con sincronización automática',
+    summary:
+      'Desarrollo y mantenimiento de apps multiplataforma con React Native, desde la configuración nativa hasta la publicación en tiendas.',
+    highlights: [
+      'Autenticación, biometría y Face ID',
+      'Firebase y notificaciones push',
+      'Builds para desarrollo, QA y producción',
     ],
-    stack: ['React Native', 'TypeScript', 'Firebase', 'FCM', 'AsyncStorage', 'ASP.NET Core', 'MySQL'],
-    image: 'cobranza',
-    featured: true,
-    caseStudy: {
-      challenge: 'Los gestores operaban en zonas con conectividad intermitente. Cualquier solución requería funcionar sin internet y sincronizar datos críticos sin pérdida.',
-      approach: 'Implementé una arquitectura offline-first con SQLite local, cola de sincronización con reintentos automáticos y resolución de conflictos basada en timestamps del servidor.',
-      outcome: 'El sistema procesa 2,400+ interacciones de cobranza diarias con 99.8% de integridad de datos, incluso en zonas sin señal.',
-    },
-  },
-  {
-    id: 'ecommerce-pagos',
-    title: 'Plataforma E-Commerce con Pagos Multi-Gateway',
-    category: 'Backend',
-    categoryColor: 'text-emerald-400 bg-emerald-400/10',
-    problem: 'Retailer con tienda en línea que perdía ventas por fallas en el gateway de pago único. Sin fallback, cada caída del proveedor representaba pérdidas directas.',
-    solution: 'Sistema de pagos con enrutamiento inteligente entre Stripe y OpenPay, reintentos automáticos, webhooks seguros y panel de monitoreo de transacciones en tiempo real.',
-    results: [
-      'Uptime de pagos al 99.97% (vs 94.2% previo)',
-      'Integración con Stripe y OpenPay en un solo flujo',
-      '40% reducción en comisiones por enrutamiento inteligente',
-      'Recuperación automática de pagos fallidos: +18% en conversión',
+    responsibilities: [
+      'Desarrollo de apps para Android e iOS integradas con APIs RESTful',
+      'Configuración de proyectos nativos en Android Studio y Xcode',
+      'Integración con servicios nativos, permisos y dependencias',
+      'Generación de builds y diagnóstico de errores de compilación',
+      'Preparación para publicación y atención de incidencias en Google Play y App Store',
     ],
-    stack: ['ASP.NET Core', 'TypeScript', 'Stripe API', 'OpenPay API', 'React', 'MySQL', 'Redis'],
-    image: 'ecommerce',
+    stack: ['React Native', 'TypeScript', 'Android SDK', 'iOS SDK', 'Firebase', 'Gradle', 'Xcode'],
     featured: false,
-    caseStudy: {
-      challenge: 'Stripe tenía menor comisión pero mayor latencia en México. OpenPay era más económico localmente pero sin soporte para tarjetas internacionales. Se necesitaba lo mejor de ambos.',
-      approach: 'Construí un adapter pattern con estrategia de enrutamiento por tipo de tarjeta, región del emisor y estado del gateway. Los webhooks de ambos proveedores se normalizan en un evento interno unificado.',
-      outcome: 'El enrutamiento inteligente redujo las comisiones promedio en 40% y la tasa de aprobación de pagos subió de 82% a 94% en el primer mes.',
-    },
   },
   {
-    id: 'suite-empresarial',
-    title: 'Suite Empresarial de Gestión de Operaciones',
-    category: 'Enterprise',
-    categoryColor: 'text-orange-400 bg-orange-400/10',
-    problem: 'Empresa con 5 sistemas legacy desconectados: RH, inventario, ventas, finanzas y CRM. Datos duplicados, reportes que tardaban días y decisiones basadas en información desactualizada.',
-    solution: 'Suite web unificada con módulos interconectados, data warehouse para reportes en tiempo real, roles granulares por módulo y notificaciones cross-sistema.',
-    results: [
-      'Reducción del 90% en tiempo de generación de reportes',
-      'Eliminación de 5 sistemas legacy reemplazados por uno',
-      '200+ usuarios activos diarios en producción',
-      'ROI de 340% en 18 meses según CFO del cliente',
-    ],
-    stack: ['React', 'TypeScript', 'ASP.NET Core', 'SQL Server', 'SignalR', 'JWT', 'TailwindCSS'],
-    image: 'suite',
-    featured: true,
-    caseStudy: {
-      challenge: 'La migración de datos desde 5 sistemas con esquemas incompatibles y años de inconsistencias representaba el mayor riesgo del proyecto.',
-      approach: 'Diseñé un proceso ETL incremental por módulos, con período de operación dual (sistema nuevo + legacy en paralelo) y validaciones automáticas de consistencia antes de cada corte.',
-      outcome: 'La migración de 6+ años de datos históricos se completó en 8 semanas sin pérdida de información y sin afectar la operación diaria.',
-    },
-  },
-  {
-    id: 'push-notifications',
-    title: 'Sistema de Notificaciones Push a Escala',
-    category: 'Backend',
-    categoryColor: 'text-emerald-400 bg-emerald-400/10',
-    problem: 'App con 50,000 usuarios activos y sistema de notificaciones que fallaba al enviar campañas masivas: timeouts, duplicados y sin métricas de apertura.',
-    solution: 'Motor de notificaciones con cola de mensajes, segmentación avanzada de audiencias, programación por zonas horarias, A/B testing y dashboard de analytics en tiempo real.',
-    results: [
-      'Envío confiable a 50,000+ dispositivos simultáneos',
-      'Tasa de entrega del 99.1% (vs 71% anterior)',
-      'Reducción de 60% en costos de FCM por optimización de lotes',
-      'Dashboard de open rate, CTR y conversiones por campaña',
-    ],
-    stack: ['ASP.NET Core', 'Firebase FCM', 'Redis', 'Hangfire', 'React', 'TypeScript', 'MySQL'],
-    image: 'notifications',
-    featured: false,
-    caseStudy: {
-      challenge: 'FCM tiene límites de rate y los envíos masivos síncronos bloqueaban el servidor durante minutos, causando timeouts en cascada en toda la API.',
-      approach: 'Implementé una cola de procesamiento asíncrono con Hangfire, particionamiento de audiencias en lotes de 500, retry logic exponencial y circuit breaker para fallos de FCM.',
-      outcome: 'La campaña más grande (48,000 dispositivos) se completó en 4 minutos con 99.1% de entrega vs 90 minutos de timeout anterior.',
-    },
-  },
-  {
-    id: 'automatizacion-rpa',
-    title: 'Automatización de Procesos Administrativos',
+    id: 'whatsapp-crm',
+    title: 'WhatsApp bot integrado a CRM',
     category: 'Automatización',
-    categoryColor: 'text-pink-400 bg-pink-400/10',
-    problem: 'Equipo administrativo de 12 personas dedicando el 40% de su tiempo a tareas repetitivas: generación de reportes, captura de datos entre sistemas y envío de documentos.',
-    solution: 'Suite de automatización con bots RPA para extracción de datos, generación automática de PDFs, integración con correo corporativo y notificaciones por WhatsApp Business.',
-    results: [
-      '1,200+ horas hombre liberadas mensualmente',
-      '12 procesos automatizados al 100%',
-      'ROI positivo en el primer mes de operación',
-      'Cero errores en generación de reportes vs 8% previo',
+    summary:
+      'Automatización de conversaciones y procesos de atención mediante WhatsApp, conectada al CRM y a los servicios backend.',
+    highlights: [
+      'Conversaciones automatizadas de atención',
+      'Integración directa con el CRM',
     ],
-    stack: ['C#', '.NET', 'Selenium', 'Hangfire', 'iTextSharp', 'Twilio', 'SQL Server'],
-    image: 'automation',
+    responsibilities: [
+      'Construcción del bot y procesamiento de mensajes',
+      'Diseño de flujos de comunicación',
+      'Integración con CRM, APIs y servicios backend',
+    ],
+    stack: ['Node.js', 'JavaScript', 'WhatsApp', 'CRM', 'APIs'],
     featured: false,
-    caseStudy: {
-      challenge: 'Los sistemas legacy no tenían API. La automatización requería interacción con interfaces web antiguas y aplicaciones de escritorio de terceros.',
-      approach: 'Combiné Selenium para UI automation de sistemas web con Interop de Windows para aplicaciones de escritorio, encapsulando cada bot en un servicio independiente con su propio ciclo de vida.',
-      outcome: 'El primer bot en producción recuperó su costo de desarrollo en 3 semanas. La suite completa procesa 4,500+ tareas automatizadas mensuales.',
-    },
-  },
-  {
-    id: 'ia-asistente',
-    title: 'Asistente IA para Soporte Técnico',
-    category: 'IA',
-    categoryColor: 'text-yellow-400 bg-yellow-400/10',
-    problem: 'Centro de soporte con tiempo de respuesta promedio de 8 horas y equipo saturado con 70% de tickets siendo preguntas repetitivas que ya tenían respuesta en la documentación.',
-    solution: 'Asistente conversacional con RAG sobre documentación técnica, integrado en el portal web y app móvil. Escala automáticamente a agente humano cuando detecta baja confianza.',
-    results: [
-      'Resolución automática del 68% de tickets (antes 0%)',
-      'Tiempo de respuesta de 8h → menos de 30 segundos',
-      'Reducción del 55% en carga al equipo de soporte',
-      'NPS de soporte incrementado de 42 a 78 puntos',
-    ],
-    stack: ['React', 'TypeScript', 'ASP.NET Core', 'Claude API', 'OpenAI Embeddings', 'Pinecone', 'React Native'],
-    image: 'ai',
-    featured: true,
-    caseStudy: {
-      challenge: 'La documentación técnica estaba dispersa en PDFs, Confluence y wikis internas con más de 2,000 artículos desactualizados mezclados con información válida.',
-      approach: 'Construí un pipeline de ingestión con chunking semántico, scoring de calidad para filtrar contenido obsoleto, y un prompt de sistema que instruye al modelo a citar la fuente de cada respuesta.',
-      outcome: 'La confianza del usuario aumentó notablemente al ver las fuentes citadas. La tasa de escalación a humanos es del 32%, con 95% de satisfacción en tickets resueltos automáticamente.',
-    },
-  },
-  {
-    id: 'onboarding-digital',
-    title: 'Onboarding Digital con Verificación de Identidad',
-    category: 'Mobile',
-    categoryColor: 'text-cyan-400 bg-cyan-400/10',
-    problem: 'Empresa de telecomunicaciones con proceso de alta de clientes que tomaba 3 visitas presenciales, documentos físicos y semanas de espera para activar el servicio.',
-    solution: 'App móvil con flujo de onboarding 100% digital: verificación biométrica, liveness detection, captura y validación de documentos oficiales, firma electrónica y activación inmediata.',
-    results: [
-      'Proceso de 3 visitas reducido a 12 minutos desde la app',
-      'Activaciones en el mismo día incrementaron al 89%',
-      'Costo de adquisición reducido en 62%',
-      'Cobertura extendida a zonas sin puntos de venta físicos',
-    ],
-    stack: ['React Native', 'TypeScript', 'ASP.NET Core', 'Azure Cognitive Services', 'Firebase', 'JWT', 'MySQL'],
-    image: 'onboarding',
-    featured: false,
-    caseStudy: {
-      challenge: 'Las regulaciones del sector requerían verificación KYC robusta con biometría facial y validación de INE, pero sin incrementar la fricción que ya causaba abandono.',
-      approach: 'Diseñé el flujo en 4 pasos con progreso visible, guardado de estado en cada paso para retomar si se abandona, y liveness detection nativa sin SDKs pesados que afectaran performance.',
-      outcome: 'La tasa de abandono durante el onboarding bajó del 54% al 11%, y la empresa eliminó la necesidad de 3 centros de servicio presenciales.',
-    },
   },
 ]

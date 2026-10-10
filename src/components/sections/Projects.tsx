@@ -1,169 +1,139 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { ArrowUpRight, X, Check } from '@phosphor-icons/react'
 import { SectionHeader } from '../ui/SectionHeader'
 import { projects } from '../../data/projects'
-import { X, ArrowRight, TrendingUp, Wrench, Lightbulb, BarChart3 } from 'lucide-react'
+import type { Project } from '../../data/projects'
+import { EASE } from '../../lib/ease'
+import { Reveal } from '../../lib/motion'
 
-const projectIcons: Record<string, string> = {
-  fintech: '💳', cobranza: '📱', ecommerce: '🛒', suite: '🏢',
-  notifications: '🔔', automation: '⚙️', ai: '🤖', onboarding: '🪪',
+const categories = ['Todos', 'Fintech', 'Arquitectura', 'Mobile', 'Automatización'] as const
+
+function Chip({ children }: { children: string }) {
+  return <span className="rounded-full border border-line px-2 py-1 font-mono text-xs text-neutral-400">{children}</span>
 }
 
-const categoryColors: Record<string, string> = {
-  Fintech: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20',
-  Mobile: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20',
-  Backend: 'text-blue-400 bg-blue-400/10 border-blue-400/20',
-  Enterprise: 'text-orange-400 bg-orange-400/10 border-orange-400/20',
-  Automatización: 'text-pink-400 bg-pink-400/10 border-pink-400/20',
-  IA: 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20',
-}
-
-function ProjectCard({ project, onClick }: { project: typeof projects[0]; onClick: () => void }) {
+function ProjectCard({ project, onOpen }: { project: Project; onOpen: () => void }) {
   return (
-    <motion.article
-      layout
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.96 }}
-      transition={{ duration: 0.3 }}
-      className="group relative rounded-2xl border border-slate-800/70 bg-slate-900/50 overflow-hidden cursor-pointer"
-      onClick={onClick}
+    <button
+      onClick={onOpen}
+      className="group flex h-full w-full flex-col rounded-3xl border border-line bg-surface p-2 text-left transition-all duration-700 ease-fluid hover:-translate-y-1 hover:border-line-strong active:scale-[0.99]"
     >
-      {/* Image area with hover overlay */}
-      <div className="relative h-44 bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center overflow-hidden">
-        {/* Hover overlay */}
-        <div className="absolute inset-0 bg-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-          <span className="inline-flex items-center gap-2 bg-emerald-500 text-slate-950 font-semibold text-sm px-4 py-2 rounded-lg font-heading">
-            Ver caso de estudio
-            <ArrowRight className="w-4 h-4" />
-          </span>
-        </div>
-
-        <span className="text-5xl group-hover:scale-90 group-hover:opacity-40 transition-all duration-300">
-          {projectIcons[project.image] ?? '💡'}
-        </span>
-
-        <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5">
-          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${categoryColors[project.category] ?? 'text-slate-400 bg-slate-400/10 border-slate-400/20'}`}>
+      <div className="flex flex-1 flex-col rounded-2xl bg-ink/60 p-6">
+        <div className="mb-6 flex items-center justify-between">
+          <span className="font-mono text-xs uppercase tracking-widest text-emerald-400">
             {project.category}
+            {project.client && <span className="text-neutral-500"> · {project.client}</span>}
           </span>
-          {project.featured && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-400/10 text-yellow-400 border border-yellow-400/20">
-              ★ Destacado
-            </span>
-          )}
+          <span className="flex h-8 w-8 items-center justify-center rounded-full border border-line text-neutral-400 transition-all duration-700 ease-fluid group-hover:rotate-45 group-hover:border-white group-hover:text-white">
+            <ArrowUpRight size={14} />
+          </span>
         </div>
-      </div>
-
-      <div className="p-5">
-        <h3 className="heading text-white font-bold text-base mb-2 group-hover:text-emerald-300 transition-colors duration-200">
-          {project.title}
-        </h3>
-        <p className="text-slate-500 text-sm leading-relaxed mb-4 line-clamp-2">
-          {project.problem}
-        </p>
-        <div className="flex flex-wrap gap-1.5">
-          {project.stack.slice(0, 3).map((tech) => (
-            <span key={tech} className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 text-xs font-mono">
-              {tech}
-            </span>
+        <h3 className="mb-2 text-2xl font-semibold tracking-tight text-white">{project.title}</h3>
+        <p className="mb-6 text-neutral-400">{project.summary}</p>
+        <ul className="mb-6 space-y-2">
+          {project.highlights.map((h) => (
+            <li key={h} className="flex gap-2 text-sm text-neutral-300">
+              <Check size={14} weight="bold" className="mt-1 shrink-0 text-emerald-400" />
+              {h}
+            </li>
           ))}
-          {project.stack.length > 3 && (
-            <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-500 text-xs">
-              +{project.stack.length - 3}
-            </span>
-          )}
+        </ul>
+        <div className="mt-auto flex flex-wrap gap-2">
+          {project.stack.slice(0, 5).map((t) => (
+            <Chip key={t}>{t}</Chip>
+          ))}
+          {project.stack.length > 5 && <Chip>{`+${project.stack.length - 5}`}</Chip>}
         </div>
       </div>
-    </motion.article>
+    </button>
   )
 }
 
-function ProjectModal({ project, onClose }: { project: typeof projects[0]; onClose: () => void }) {
+function ProjectModal({ project, onClose }: { project: Project; onClose: () => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    window.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [onClose])
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      transition={{ duration: 0.5, ease: EASE }}
+      className="fixed inset-0 z-[60] flex items-end justify-center bg-black/80 p-4 backdrop-blur-xl sm:items-center"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="absolute inset-0 bg-black/85 backdrop-blur-sm" onClick={onClose} />
       <motion.div
-        initial={{ scale: 0.95, opacity: 0, y: 16 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.95, opacity: 0, y: 16 }}
-        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-slate-900 border border-slate-700/60 shadow-2xl"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="project-title"
+        initial={{ y: 64, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 32, opacity: 0 }}
+        transition={{ duration: 0.7, ease: EASE }}
+        className="max-h-[88svh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-line bg-surface"
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between p-6 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800">
+        <div className="sticky top-0 flex items-start justify-between gap-4 border-b border-line bg-surface p-6">
           <div>
-            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border mb-2 ${categoryColors[project.category] ?? ''}`}>
+            <p className="mb-2 font-mono text-xs uppercase tracking-widest text-emerald-400">
               {project.category}
-            </span>
-            <h2 className="heading text-white font-bold text-xl">{project.title}</h2>
+              {project.client && <span className="text-neutral-500"> · {project.client}</span>}
+            </p>
+            <h2 id="project-title" className="text-2xl font-semibold tracking-tight text-white">
+              {project.title}
+            </h2>
           </div>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer"
+            aria-label="Cerrar"
+            autoFocus
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-raised text-neutral-400 transition-colors duration-700 ease-fluid hover:text-white"
           >
-            <X className="w-4 h-4" />
+            <X size={14} />
           </button>
         </div>
 
-        <div className="p-6 space-y-6">
-          <div className="p-4 rounded-xl bg-red-500/5 border border-red-500/15">
-            <div className="flex items-center gap-2 text-red-400 font-semibold text-sm mb-2">
-              <TrendingUp className="w-4 h-4" /> El Problema
-            </div>
-            <p className="text-slate-300 text-sm leading-relaxed">{project.problem}</p>
-          </div>
-
-          <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/15">
-            <div className="flex items-center gap-2 text-emerald-400 font-semibold text-sm mb-2">
-              <Wrench className="w-4 h-4" /> La Solución
-            </div>
-            <p className="text-slate-300 text-sm leading-relaxed">{project.solution}</p>
-          </div>
-
-          <div className="space-y-3">
-            <p className="flex items-center gap-2 text-white font-semibold text-sm">
-              <Lightbulb className="w-4 h-4 text-yellow-400" /> Caso de Estudio
-            </p>
-            {[
-              { label: 'Desafío técnico', value: project.caseStudy.challenge },
-              { label: 'Enfoque adoptado', value: project.caseStudy.approach },
-              { label: 'Resultado final', value: project.caseStudy.outcome, highlight: true },
-            ].map(({ label, value, highlight }) => (
-              <div key={label} className={`p-4 rounded-xl ${highlight ? 'bg-emerald-500/5 border border-emerald-500/15' : 'bg-slate-800/50'}`}>
-                <p className={`text-xs uppercase tracking-widest font-medium mb-2 font-mono ${highlight ? 'text-emerald-400' : 'text-slate-500'}`}>{label}</p>
-                <p className="text-slate-300 text-sm leading-relaxed">{value}</p>
-              </div>
-            ))}
-          </div>
+        <div className="space-y-8 p-6">
+          <p className="text-neutral-300">{project.summary}</p>
 
           <div>
-            <p className="flex items-center gap-2 text-white font-semibold text-sm mb-3">
-              <BarChart3 className="w-4 h-4 text-cyan-400" /> Resultados medibles
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {project.results.map((r) => (
-                <div key={r} className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-800/50">
-                  <span className="text-emerald-400 font-bold shrink-0 mt-0.5">✓</span>
-                  <span className="text-slate-300 text-sm">{r}</span>
-                </div>
+            <p className="mb-4 font-mono text-xs uppercase tracking-widest text-neutral-500">Lo que hice</p>
+            <ul className="space-y-2">
+              {project.responsibilities.map((r) => (
+                <li key={r} className="flex gap-2 text-sm text-neutral-300">
+                  <Check size={14} weight="bold" className="mt-1 shrink-0 text-emerald-400" />
+                  {r}
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
 
+          {project.components && (
+            <div>
+              <p className="mb-4 font-mono text-xs uppercase tracking-widest text-neutral-500">Componentes</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {project.components.map((c) => (
+                  <div key={c.title} className="rounded-xl bg-raised p-4">
+                    <p className="mb-2 text-sm font-semibold text-white">{c.title}</p>
+                    <p className="text-sm text-neutral-400">{c.items.join(' · ')}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div>
-            <p className="text-slate-500 text-xs uppercase tracking-widest font-mono mb-3">Stack</p>
+            <p className="mb-4 font-mono text-xs uppercase tracking-widest text-neutral-500">Tecnologías</p>
             <div className="flex flex-wrap gap-2">
-              {project.stack.map((tech) => (
-                <span key={tech} className="px-3 py-1 rounded-full bg-slate-800 border border-slate-700/60 text-slate-300 text-xs font-mono">
-                  {tech}
-                </span>
+              {project.stack.map((t) => (
+                <Chip key={t}>{t}</Chip>
               ))}
             </div>
           </div>
@@ -173,68 +143,51 @@ function ProjectModal({ project, onClose }: { project: typeof projects[0]; onClo
   )
 }
 
-const categories = ['Todos', 'Fintech', 'Mobile', 'Backend', 'Enterprise', 'Automatización', 'IA']
-
 export function Projects() {
-  const [selected, setSelected] = useState<typeof projects[0] | null>(null)
-  const [filter, setFilter] = useState('Todos')
-
-  const filtered = filter === 'Todos' ? projects : projects.filter((p) => p.category === filter)
+  const [filter, setFilter] = useState<(typeof categories)[number]>('Todos')
+  const [selected, setSelected] = useState<Project | null>(null)
+  const visible = filter === 'Todos' ? projects : projects.filter((p) => p.category === filter)
 
   return (
-    <section id="projects" className="section-padding bg-slate-900/20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="projects" className="section-y border-t border-line">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
-          label="Portafolio"
-          title="Proyectos que generaron "
-          highlight="resultados reales"
-          description="Casos de estudio con problemas concretos, soluciones técnicas y métricas de impacto."
+          label="Proyectos"
+          title="Plataformas que hoy operan en producción"
+          description="Fintech, onboarding digital, microservicios y mobile. Abre cada proyecto para ver qué construí y con qué."
         />
 
-        {/* Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex flex-wrap justify-center gap-2 mt-10 mb-12"
-        >
-          {categories.map((cat) => (
+        <div className="mt-12 mb-8 flex flex-wrap gap-2" role="tablist" aria-label="Filtrar proyectos">
+          {categories.map((c) => (
             <button
-              key={cat}
-              onClick={() => setFilter(cat)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer ${
-                filter === cat
-                  ? 'bg-emerald-500 text-slate-950 font-semibold shadow-lg shadow-emerald-500/25'
-                  : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700/80 border border-slate-700/60'
+              key={c}
+              role="tab"
+              aria-selected={filter === c}
+              onClick={() => setFilter(c)}
+              className={`rounded-full px-4 py-2 text-sm transition-colors duration-700 ease-fluid ${
+                filter === c ? 'bg-white font-semibold text-black' : 'border border-line text-neutral-400 hover:text-white'
               }`}
             >
-              {cat}
+              {c}
             </button>
           ))}
-        </motion.div>
-
-        {/* Masonry grid */}
-        <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-5">
-          <AnimatePresence mode="popLayout">
-            {filtered.map((project) => (
-              <div key={project.id} className="break-inside-avoid mb-5">
-                <ProjectCard project={project} onClick={() => setSelected(project)} />
-              </div>
-            ))}
-          </AnimatePresence>
         </div>
 
-        {/* Disclaimer */}
-        <p className="mt-12 text-center text-xs text-slate-600 leading-relaxed max-w-2xl mx-auto border-t border-slate-800/60 pt-8">
-          Todos los proyectos mostrados son propiedad de las empresas para las que fueron desarrollados.
-          Se presentan únicamente como referencia para demostrar experiencia técnica y no implican
-          divulgación de información confidencial.
-        </p>
+        <div className="grid gap-4 md:grid-cols-2">
+          {visible.map((p, i) => (
+            <Reveal key={p.id} delay={i * 0.05} className={p.featured && filter === 'Todos' && i === 0 ? 'md:col-span-2' : ''}>
+              <ProjectCard project={p} onOpen={() => setSelected(p)} />
+            </Reveal>
+          ))}
+        </div>
 
-        <AnimatePresence>
-          {selected && <ProjectModal project={selected} onClose={() => setSelected(null)} />}
-        </AnimatePresence>
+        <p className="mt-12 max-w-[680px] text-xs text-neutral-600">
+          Los proyectos son propiedad de las empresas para las que fueron desarrollados. Se muestran solo como
+          referencia de experiencia técnica, sin información confidencial.
+        </p>
       </div>
+
+      <AnimatePresence>{selected && <ProjectModal project={selected} onClose={() => setSelected(null)} />}</AnimatePresence>
     </section>
   )
 }
